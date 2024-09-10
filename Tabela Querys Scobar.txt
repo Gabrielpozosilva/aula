@@ -1,0 +1,64 @@
+drop database teste1;
+
+CREATE DATABASE loja;
+
+USE loja;
+
+CREATE TABLE Clientes (
+    Cliente_id INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100),
+    CPF VARCHAR(11) UNIQUE,
+    Data_Nascimento DATE,
+    Telefone VARCHAR(15),
+    Endereco VARCHAR(255)
+);
+
+CREATE TABLE Categoria (
+    Categoria_id INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Deletada TINYINT(1) DEFAULT 0
+);
+
+CREATE TABLE Produtos (
+    Produto_id INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Descricao VARCHAR(255),
+    Preco DECIMAL(10, 2),
+    Categoria_id INT,
+    FOREIGN KEY (Categoria_id) REFERENCES Categoria(Categoria_id)
+);
+
+CREATE TABLE Estoque (
+    Estoque_id INT AUTO_INCREMENT PRIMARY KEY,
+    Produto_id INT,
+    Quantidade INT,
+    FOREIGN KEY (Produto_id) REFERENCES Produtos(Produto_id)
+);
+
+CREATE TABLE Compras (
+    Compra_id INT AUTO_INCREMENT PRIMARY KEY,
+    Cliente_id INT,
+    Data_Compra DATETIME,
+    Valor_Total DECIMAL(10, 2),
+    Token_PicPay VARCHAR(255),
+    FOREIGN KEY (Cliente_id) REFERENCES Clientes(Cliente_id)
+);
+
+CREATE TABLE Login (
+    Login_id INT AUTO_INCREMENT PRIMARY KEY,
+    Cliente_id INT,
+    Usuario VARCHAR(50) UNIQUE,
+    Senha VARCHAR(255),
+    Token_PicPay VARCHAR(255),
+    FOREIGN KEY (Cliente_id) REFERENCES Clientes(Cliente_id)
+);
+
+CREATE TABLE Compra_Produtos (
+    Compra_id INT,
+    Produto_id INT,
+    Quantidade INT,
+    Preco DECIMAL(10, 2),
+    PRIMARY KEY (Compra_id, Produto_id),
+    FOREIGN KEY (Compra_id) REFERENCES Compras(Compra_id),
+    FOREIGN KEY (Produto_id) REFERENCES Produtos(Produto_id)
+);
